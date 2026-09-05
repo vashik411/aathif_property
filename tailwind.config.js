@@ -4,8 +4,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["'Geist'", '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        silkscreen: ["'Silkscreen'", 'cursive'],
+        sans: ['Inter', 'sans-serif'],
       },
     },
   },
