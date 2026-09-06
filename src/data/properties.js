@@ -164,11 +164,28 @@ export function getPropertyById(id) {
 
 export function filterProperties(filters) {
   return PROPERTIES.filter((property) => {
-    const { purpose, city, budget, facing, search, keyword } = filters
+    const { purpose, city, locality, budget, facing, search, keyword, location, area } = filters
 
     if (purpose && property.purpose !== purpose) return false
     if (city && property.location.city !== city) return false
     if (facing && property.facing !== facing) return false
+
+    const requestedLocation = location || locality
+    if (requestedLocation) {
+      const locationText = [
+        property.title,
+        property.location.locality,
+        property.location.city,
+        property.location.district,
+      ]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase()
+
+      if (!locationText.includes(requestedLocation.toLowerCase())) return false
+    }
+
+    if (area && !areaMatches(property.area, area)) return false
 
     if (budget && budget.max && property.priceValue > budget.max) return false
     if (budget && budget.min && property.priceValue < budget.min) return false
@@ -196,6 +213,21 @@ export function filterProperties(filters) {
 
     return true
   })
+}
+
+function areaMatches(propertyArea, requestedArea) {
+  const units = { 'sq ft': 1, sqft: 1, acre: 43560, cent: 435.6, ground: 2400 }
+  const requested = requestedArea.toLowerCase().match(/(\d+(?:\.\d+)?)\s*(sq\.?\s*ft|sqft|acre|cent|ground)/)
+  if (!requested) return true
+
+  const requestedValue = Number(requested[1]) * (units[requested[2].replace('sq.', 'sq')] || 1)
+  const propertyMatch = propertyArea.toLowerCase().match(/(\d+(?:\.\d+)?)\s*(?:–|-)?\s*(\d+(?:\.\d+)?)?\s*(sq\.?\s*ft|sqft|acre|cent|ground)/)
+  if (!propertyMatch) return true
+
+  const unit = units[propertyMatch[3].replace('sq.', 'sq')] || 1
+  const first = Number(propertyMatch[1]) * unit
+  const second = propertyMatch[2] ? Number(propertyMatch[2]) * unit : first
+  return requestedValue >= Math.min(first, second) && requestedValue <= Math.max(first, second)
 }
 
 export const BUDGET_OPTIONS = [

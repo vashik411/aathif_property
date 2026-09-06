@@ -51,7 +51,7 @@
 
 @layer utilities {
   .cta-gradient {
-    background: linear-gradient(to bottom, #2b2b2b, #101010);
+    background: #0E2B25;
   }
 
   .animate-banner-float {
@@ -72,10 +72,10 @@
 @keyframes sell-glow {
   0%,
   100% {
-    box-shadow: 0 0 8px rgba(16, 185, 129, 0.4), 0 0 20px rgba(16, 185, 129, 0.2);
+    box-shadow: 0 0 8px rgba(201, 165, 92, 0.35), 0 0 20px rgba(201, 165, 92, 0.16);
   }
   50% {
-    box-shadow: 0 0 16px rgba(16, 185, 129, 0.7), 0 0 32px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 0 16px rgba(201, 165, 92, 0.55), 0 0 32px rgba(201, 165, 92, 0.28);
   }
 }
 

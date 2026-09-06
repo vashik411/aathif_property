@@ -7,9 +7,12 @@ import {
   FILTER_OPTIONS,
 } from '../data/properties'
 import PropertyCard from '../components/PropertyCard'
+import SearchBar from '../components/SearchBar'
 
 const SELECT_CLASS =
-  'block w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-800 outline-none transition-colors focus:border-black'
+  'block w-full rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-800 outline-none transition-colors focus:border-black'
+
+const LOCATION_OPTIONS = ['Chennai', 'Bengaluru', 'Hyderabad', 'Mumbai', 'OMR', 'ECR', 'Tambaram', 'Kelambakkam', 'Sholinganallur', 'HSR Layout', 'Andheri West']
 
 export default function Properties() {
   const [searchParams] = useSearchParams()
@@ -17,11 +20,14 @@ export default function Properties() {
   const initialFilters = {
     purpose: searchParams.get('purpose') || '',
     keyword: searchParams.get('keyword') || '',
+    location: searchParams.get('location') || '',
+    area: searchParams.get('area') || '',
     city: searchParams.get('city') || '',
     locality: searchParams.get('locality') || '',
     budget: searchParams.get('budget') || '',
     facing: searchParams.get('facing') || '',
     search: searchParams.get('search') || '',
+    unit: searchParams.get('unit') || 'Sq.ft',
   }
 
   const [filters, setFilters] = useState(initialFilters)
@@ -34,6 +40,19 @@ export default function Properties() {
 
   const clearFilters = () => setFilters(initialFilters)
 
+  const handleNaturalSearch = (searchFilters) => {
+    setFilters((current) => ({
+      ...current,
+      keyword: searchFilters.keyword || '',
+      purpose: searchFilters.purpose || '',
+      city: searchFilters.city || '',
+      locality: searchFilters.locality || '',
+      location: searchFilters.location || '',
+      area: searchFilters.area || '',
+      unit: searchFilters.unit || current.unit,
+    }))
+  }
+
   const activeFilterCount = Object.values(filters).filter(
     (v) => v !== '' && v !== 'Purpose' && v !== 'City'
   ).length
@@ -45,6 +64,9 @@ export default function Properties() {
     return filterProperties({
       purpose: filters.purpose,
       keyword: filters.keyword,
+      location: filters.location,
+      area: filters.area,
+      locality: filters.locality,
       city: filters.city,
       facing: filters.facing,
       budget: urlBudget,
@@ -53,31 +75,37 @@ export default function Properties() {
   }, [filters])
 
   return (
-    <div className="w-full bg-[#f4f1ea] pb-12">
+    <div className="w-full bg-[#F7F4ED] pb-12">
       {/* Page header */}
-      <section className="bg-gray-900 px-4 py-12 text-center text-white sm:px-6 sm:py-16 md:px-12 md:py-20">
-        <h1 className="text-2xl font-extrabold tracking-tight sm:text-4xl md:text-5xl">
+      <section className="bg-[#0E2B25] px-4 py-9 text-center text-white sm:px-6 sm:py-12 md:px-12 md:py-15">
+        <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl md:text-4xl">
           Browse Properties
         </h1>
-        <p className="mt-3 max-w-2xl text-base text-gray-300 mx-auto sm:mt-4 sm:text-lg">
+        <p className="mt-2 max-w-2xl text-sm text-gray-300 mx-auto sm:mt-3 sm:text-base">
           Search from our curated collection of residential plots, farm land,
           commercial properties, and luxury villas.
         </p>
       </section>
 
+      <section className="mx-auto max-w-7xl px-4 pt-4 sm:px-6 lg:px-8">
+        <SearchBar onSearch={handleNaturalSearch} directMobile />
+      </section>
+
       {/* Search form */}
-      <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-        <form
-          onSubmit={(e) => e.preventDefault()}
-          className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-5"
-        >
-          <input
-            type="text"
-            placeholder="Search by keyword..."
-            value={filters.keyword}
-            onChange={(e) => updateFilter('keyword')(e.target.value)}
+      <section className="mx-auto max-w-7xl px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
+        <form onSubmit={(e) => e.preventDefault()} className="grid grid-cols-2 gap-1.5 sm:gap-2 lg:grid-cols-4">
+          <select
+            value={filters.location || filters.city || filters.locality}
+            onChange={(e) => {
+              const value = e.target.value
+              setFilters((current) => ({ ...current, location: value, city: '', locality: '' }))
+            }}
             className={SELECT_CLASS}
-          />
+          >
+            <option value="">Select Location</option>
+            {LOCATION_OPTIONS.map((location) => <option key={location}>{location}</option>)}
+          </select>
+
           <select
             value={filters.purpose}
             onChange={(e) => updateFilter('purpose')(e.target.value)}
@@ -86,16 +114,6 @@ export default function Properties() {
             <option value="">All Categories</option>
             {FILTER_OPTIONS.purposes.map((p) => (
               <option key={p} value={p}>{p}</option>
-            ))}
-          </select>
-          <select
-            value={filters.city}
-            onChange={(e) => updateFilter('city')(e.target.value)}
-            className={SELECT_CLASS}
-          >
-            <option value="">All Cities</option>
-            {FILTER_OPTIONS.cities.map((c) => (
-              <option key={c} value={c}>{c}</option>
             ))}
           </select>
           <select
@@ -108,23 +126,33 @@ export default function Properties() {
               <option key={b.label} value={b.label}>{b.label}</option>
             ))}
           </select>
-          <select
-            value={filters.facing}
-            onChange={(e) => updateFilter('facing')(e.target.value)}
-            className={SELECT_CLASS}
-          >
-            <option value="">Any Facing</option>
-            {FILTER_OPTIONS.facings.map((f) => (
-              <option key={f} value={f}>{f}</option>
-            ))}
-          </select>
+          <div className="grid grid-cols-[minmax(0,1fr)_92px] gap-1.5 sm:gap-2">
+            <input
+              type="text"
+              inputMode="decimal"
+              placeholder="Land area"
+              value={filters.area}
+              onChange={(e) => updateFilter('area')(e.target.value)}
+              className={SELECT_CLASS}
+            />
+            <select
+              value={filters.unit}
+              onChange={(e) => updateFilter('unit')(e.target.value)}
+              className={SELECT_CLASS}
+            >
+              <option>Sq.ft</option>
+              <option>Cent</option>
+              <option>Ground</option>
+              <option>Acre</option>
+            </select>
+          </div>
         </form>
 
-        <div className="mt-4 flex items-center justify-between">
+        <div className="mt-3 flex items-center justify-between">
           <button
             type="button"
             onClick={() => setShowFilters(true)}
-            className="inline-flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-700 hover:text-gray-900"
           >
             <Filter className="h-4 w-4" />
             Advanced filters
@@ -157,7 +185,7 @@ export default function Properties() {
           <button
             type="button"
             onClick={clearFilters}
-            className="mt-3 text-sm text-gray-600 hover:text-gray-900"
+            className="mt-2 text-sm text-gray-600 hover:text-gray-900"
           >
             Clear all filters
           </button>
@@ -167,20 +195,20 @@ export default function Properties() {
       {/* Results */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {results.length === 0 ? (
-          <div className="py-16 text-center">
+            <div className="py-12 text-center">
             <p className="text-gray-500">
               No properties match your current filters.
             </p>
           </div>
         ) : (
-          <p className="mb-6 text-sm text-gray-600">
+          <p className="mb-4 text-sm text-gray-600">
             Showing {results.length} propert
             {results.length === 1 ? 'y' : 'ies'}
           </p>
         )}
 
         {viewMode === 'grid' && results.length > 0 && (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {results.map((property) => (
               <PropertyCard key={property.id} property={property} />
             ))}
@@ -188,7 +216,7 @@ export default function Properties() {
         )}
 
         {viewMode === 'list' && results.length > 0 && (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {results.map((property) => (
               <ListCard key={property.id} property={property} />
             ))}
@@ -201,11 +229,11 @@ export default function Properties() {
 
 function ListCard({ property }) {
   return (
-    <article className="flex flex-col gap-3 rounded-2xl bg-white p-3 shadow-sm ring-1 ring-black/5 sm:flex-row sm:gap-4 sm:p-4">
+    <article className="flex flex-col gap-2 rounded-xl bg-white p-2.5 shadow-sm ring-1 ring-black/5 sm:flex-row sm:gap-3 sm:p-3">
       <img
         src={property.images?.[0]}
         alt={property.title}
-        className="h-28 w-full rounded-xl object-cover sm:h-auto sm:w-40 md:w-48"
+        className="h-24 w-full rounded-lg object-cover sm:h-auto sm:w-36 md:w-44"
       />
       <div className="flex-1 min-w-0">
         <h3 className="text-base font-semibold text-gray-900 sm:text-lg">
