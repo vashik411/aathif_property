@@ -5,7 +5,7 @@ const PURPOSES = ['Residential Plot', 'Farm Land', 'Commercial Land', 'Farmhouse
 const CITIES = ['Chennai', 'Bengaluru', 'Mumbai', 'Hyderabad', 'Coimbatore']
 const FACINGS = ['North Facing', 'South Facing', 'East Facing', 'West Facing', 'North East Facing']
 const INPUT_CLASS =
-  'w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm text-gray-900 outline-none transition-colors focus:border-black'
+  'min-h-11 w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-900 outline-none transition-colors placeholder:text-gray-400 focus:border-[#173F35] focus:ring-2 focus:ring-[#173F35]/10'
 
 export default function Sell() {
   const [form, setForm] = useState({
@@ -53,25 +53,18 @@ export default function Sell() {
 
   return (
     <div className="w-full bg-[#F7F4ED] pb-14">
-      {/* Hero */}
-      <section className="bg-[#0E2B25] px-4 py-9 text-center text-white sm:px-6 sm:py-12 md:px-12 md:py-15">
-        <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl md:text-4xl">
-          List Your Property
-        </h1>
-        <p className="mt-2 max-w-2xl text-sm text-gray-300 mx-auto sm:mt-3 sm:text-base">
-          Showcase your land or property to thousands of qualified buyers.
-        </p>
-      </section>
-
       {/* Form */}
-      <section className="mx-auto max-w-3xl px-4 py-6 sm:px-6 sm:py-9 lg:px-8">
-        <div className="rounded-xl bg-white p-3.5 shadow-xl sm:rounded-2xl sm:p-7">
-          <div className="mb-5 flex items-center gap-2.5">
+      <section className="mx-auto max-w-4xl px-4 py-7 sm:px-6 sm:py-10 lg:px-8">
+        <div className="rounded-xl border border-[#E5E1D8] bg-white p-4 shadow-sm sm:rounded-2xl sm:p-7">
+          <div className="mb-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#69756F]">Sell with Aathif Property</p>
+            <div className="mt-2 flex items-center gap-2.5">
             <Sparkles className="h-5 w-5 text-[#C9A55C]" />
             <h2 className="text-xl font-semibold text-gray-900">Property details</h2>
+            </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-2">
+          <form onSubmit={handleSubmit} className="grid gap-3 sm:grid-cols-2 sm:gap-4">
             <label className="sm:col-span-2">
               <span className="mb-1.5 block text-sm font-medium">Property title</span>
               <input
@@ -172,12 +165,13 @@ export default function Sell() {
 
             <label className="sm:col-span-2">
               <span className="mb-1.5 block text-sm font-medium">Highlight copy</span>
-              <input
+              <textarea
                 required
                 value={form.description}
                 onChange={updateField('description')}
                 placeholder="What makes this property special?"
-                className={INPUT_CLASS}
+                rows="3"
+                className={`${INPUT_CLASS} py-2.5`}
               />
             </label>
 

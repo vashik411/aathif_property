@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
-import { useSearchParams } from 'react-router-dom'
-import { Filter, Grid, List } from 'lucide-react'
+import { Link, useSearchParams } from 'react-router-dom'
+import { Filter, Grid, List, Search } from 'lucide-react'
 import {
   filterProperties,
   BUDGET_OPTIONS,
@@ -14,7 +14,7 @@ const SELECT_CLASS =
 
 const LOCATION_OPTIONS = ['Chennai', 'Bengaluru', 'Hyderabad', 'Mumbai', 'OMR', 'ECR', 'Tambaram', 'Kelambakkam', 'Sholinganallur', 'HSR Layout', 'Andheri West']
 
-export default function Properties() {
+export default function Properties({ searchMode = false }) {
   const [searchParams] = useSearchParams()
 
   const initialFilters = {
@@ -31,7 +31,6 @@ export default function Properties() {
   }
 
   const [filters, setFilters] = useState(initialFilters)
-  const [showFilters, setShowFilters] = useState(false)
   const [viewMode, setViewMode] = useState('grid')
 
   const updateFilter = (field) => (value) => {
@@ -76,24 +75,34 @@ export default function Properties() {
 
   return (
     <div className="w-full bg-[#F7F4ED] pb-12">
-      {/* Page header */}
-      <section className="bg-[#0E2B25] px-4 py-9 text-center text-white sm:px-6 sm:py-12 md:px-12 md:py-15">
-        <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl md:text-4xl">
-          Browse Properties
-        </h1>
-        <p className="mt-2 max-w-2xl text-sm text-gray-300 mx-auto sm:mt-3 sm:text-base">
-          Search from our curated collection of residential plots, farm land,
-          commercial properties, and luxury villas.
-        </p>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-4 pt-4 sm:px-6 lg:px-8">
-        <SearchBar onSearch={handleNaturalSearch} directMobile />
-      </section>
+      {searchMode ? (
+        <section className="mx-auto max-w-7xl px-4 pt-4 sm:px-6 lg:px-8">
+          <SearchBar onSearch={handleNaturalSearch} directMobile />
+        </section>
+      ) : (
+        <section className="mx-auto max-w-7xl px-4 pt-4 sm:px-6 lg:px-8">
+          <Link
+            to="/search"
+            className="flex h-12 w-full items-center gap-2.5 rounded-lg border border-gray-200 bg-white px-3 text-left shadow-lg shadow-black/10 transition-shadow hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#2C78B8]/40"
+            aria-label="Open property search"
+          >
+            <Search className="h-4 w-4 shrink-0 text-gray-700" />
+            <span className="flex-1 text-sm font-medium text-gray-400">Search properties...</span>
+            <span className="rounded-md bg-gray-100 px-2.5 py-1.5 text-xs font-medium text-gray-600">Search</span>
+          </Link>
+        </section>
+      )}
 
       {/* Search form */}
-      <section className="mx-auto max-w-7xl px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
+      {searchMode && <section className="mx-auto max-w-7xl px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
         <form onSubmit={(e) => e.preventDefault()} className="grid grid-cols-2 gap-1.5 sm:gap-2 lg:grid-cols-4">
+          <input
+            type="text"
+            placeholder="Property name or keyword"
+            value={filters.keyword}
+            onChange={(e) => updateFilter('keyword')(e.target.value)}
+            className={SELECT_CLASS}
+          />
           <select
             value={filters.location || filters.city || filters.locality}
             onChange={(e) => {
@@ -114,6 +123,16 @@ export default function Properties() {
             <option value="">All Categories</option>
             {FILTER_OPTIONS.purposes.map((p) => (
               <option key={p} value={p}>{p}</option>
+            ))}
+          </select>
+          <select
+            value={filters.facing}
+            onChange={(e) => updateFilter('facing')(e.target.value)}
+            className={SELECT_CLASS}
+          >
+            <option value="">Any Facing</option>
+            {FILTER_OPTIONS.facings.map((facing) => (
+              <option key={facing} value={facing}>{facing}</option>
             ))}
           </select>
           <select
@@ -149,19 +168,10 @@ export default function Properties() {
         </form>
 
         <div className="mt-3 flex items-center justify-between">
-          <button
-            type="button"
-            onClick={() => setShowFilters(true)}
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-700 hover:text-gray-900"
-          >
+          <span className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-700">
             <Filter className="h-4 w-4" />
-            Advanced filters
-            {activeFilterCount > 0 && (
-              <span className="rounded-full bg-emerald-600 px-2 py-0.5 text-xs text-white">
-                {activeFilterCount}
-              </span>
-            )}
-          </button>
+            {activeFilterCount} filter{activeFilterCount === 1 ? '' : 's'} selected
+          </span>
 
           <div className="flex items-center gap-2">
             <button
@@ -190,7 +200,7 @@ export default function Properties() {
             Clear all filters
           </button>
         )}
-      </section>
+      </section>}
 
       {/* Results */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -208,7 +218,7 @@ export default function Properties() {
         )}
 
         {viewMode === 'grid' && results.length > 0 && (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-3 gap-2 sm:gap-4">
             {results.map((property) => (
               <PropertyCard key={property.id} property={property} />
             ))}

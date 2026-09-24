@@ -152,7 +152,7 @@ export default function SearchBar({ onSearch, directMobile = false }) {
             type="text"
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
-            placeholder="House in Chennai or plots in ECR"
+            placeholder="Search properties..."
             aria-label="Search properties by phrase"
             className="min-w-0 flex-1 bg-transparent text-xs font-medium text-gray-900 outline-none placeholder:text-gray-400"
           />

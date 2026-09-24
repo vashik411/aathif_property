@@ -1,97 +1,163 @@
 import { NavLink, Link, useLocation } from 'react-router-dom'
-import { useState } from 'react'
-import { Home, Menu, Search, Upload, X, Phone, Mail, MapPin } from 'lucide-react'
+import { Building2, Home, Info, Mail, MapPin, Phone, Search, Tag, Upload } from 'lucide-react'
 
 const NAV_ITEMS = [
-  { label: 'Home', to: '/' },
-  { label: 'Properties', to: '/properties' },
-  { label: 'About', to: '/about' },
-  { label: 'Contact', to: '/contact' },
-  { label: 'Sell', to: '/sell', highlight: true },
+  { label: 'Buy', to: '/properties', Icon: Home },
+  { label: 'Sell', to: '/sell', Icon: Tag },
+  { label: 'Properties', to: '/properties', Icon: Building2 },
+  { label: 'About', to: '/about', Icon: Info },
+  { label: 'Contact', to: '/contact', Icon: Phone },
 ]
 
-function Logo({ overlay = false }) {
+function BrandMark() {
   return (
-    <Link to="/" className={`flex items-center gap-1 text-lg font-bold sm:gap-1.5 sm:text-lg ${overlay ? 'text-gray-900 sm:text-white' : 'text-gray-900'}`}>
-      <span className={`flex h-6 w-6 items-center justify-center rounded-md bg-[#173F35] text-xs text-white sm:h-7 sm:w-7 ${overlay ? 'sm:bg-white/20 sm:backdrop-blur-sm' : ''}`}>
-        🏡
-      </span>
-      <span className="inline text-sm sm:text-lg">Aathif Property</span>
+    <svg
+      viewBox="0 0 150 110"
+      aria-hidden="true"
+      className="h-11 w-[68px] shrink-0 sm:h-16 sm:w-[100px]"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <linearGradient id="brandGreen" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#064E3B" />
+          <stop offset="55%" stopColor="#087443" />
+          <stop offset="100%" stopColor="#58B83A" />
+        </linearGradient>
+
+        <linearGradient id="brandGold" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#D8B34A" />
+          <stop offset="100%" stopColor="#B8862B" />
+        </linearGradient>
+      </defs>
+
+      {/* HOUSE ROOF */}
+      <path
+        d="M18 55 L62 14 L106 55 L91 48 L62 24 L33 50 Z"
+        fill="url(#brandGreen)"
+      />
+
+      {/* CHIMNEY */}
+      <path
+        d="M70 30 V15 H83 V40 Z"
+        fill="#064E3B"
+      />
+
+      {/* HOUSE BODY */}
+      <rect
+        x="36"
+        y="48"
+        width="52"
+        height="29"
+        fill="white"
+      />
+
+      {/* GOLD WINDOWS - clearly inside house */}
+      <g fill="url(#brandGold)">
+        <rect x="46" y="52" width="9" height="9" rx="1" />
+        <rect x="60" y="52" width="9" height="9" rx="1" />
+        <rect x="46" y="65" width="9" height="9" rx="1" />
+        <rect x="60" y="65" width="9" height="9" rx="1" />
+      </g>
+
+      {/* HOUSE BASE */}
+      <path
+        d="M33 77 H92"
+        stroke="#064E3B"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+
+      {/* GREEN LAND — BELOW THE HOUSE */}
+      <path
+        d="
+          M6 82
+          C29 73 48 73 68 80
+          C90 88 113 84 143 67
+          C132 87 113 97 91 100
+          C61 103 31 94 6 82
+          Z
+        "
+        fill="url(#brandGreen)"
+      />
+
+      {/* LAND HIGHLIGHT */}
+      <path
+        d="
+          M11 82
+          C31 76 48 77 68 83
+          C89 90 112 86 136 72
+        "
+        fill="none"
+        stroke="#A8D96A"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+function Logo() {
+  return (
+    <Link to="/" className="flex min-w-0 max-w-[calc(100%-110px)] items-center gap-1 sm:max-w-none sm:gap-2">
+      <BrandMark />
+      <Wordmark />
     </Link>
   )
 }
 
+function Wordmark() {
+  return (
+    <span className="brand-wordmark flex min-w-0 items-baseline gap-1 whitespace-nowrap leading-none sm:gap-1.5">
+      <span className="brand-aathif text-[25px] font-extrabold text-[#064E3B] sm:text-[44px]">Aathif</span>
+      <span className="brand-property truncate text-[17px] font-semibold text-[#C89B3C] sm:text-[30px]">Property</span>
+    </span>
+  )
+}
+
 export default function Layout({ children }) {
-  const [menuOpen, setMenuOpen] = useState(false)
   const { pathname } = useLocation()
-  const homeOverlay = pathname === '/'
-  const closeMenu = () => setMenuOpen(false)
 
   return (
     <div className="flex min-h-screen flex-col">
       {/* Header */}
-      <header className={`z-40 ${homeOverlay ? 'sticky top-0 bg-white/80 shadow-sm backdrop-blur sm:absolute sm:inset-x-0 sm:bg-transparent sm:shadow-none md:sticky md:top-0 md:bg-white/80 md:shadow-sm md:backdrop-blur' : 'sticky top-0 bg-white/80 shadow-sm backdrop-blur'}`}>
+      <header className={`${pathname === '/' ? 'relative' : 'sticky top-0'} z-40 border-b border-[#E5E1D8] bg-white/95 shadow-sm backdrop-blur`}>
         <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8">
-          <div className="flex min-h-12 items-center justify-between py-1">
-            <Logo overlay={homeOverlay} />
-
-            {/* Desktop nav */}
-            <nav className="hidden space-x-1 text-sm font-medium md:flex">
-              {NAV_ITEMS.map((item) => (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  className={({ isActive }) =>
-                    item.highlight
-                      ? `relative rounded-full bg-[#173F35] px-3.5 py-1 font-semibold text-white transition-all duration-300 animate-[sell-glow_2s_ease-in-out_infinite] hover:bg-[#0E2B25] hover:scale-105`
-                      : `rounded-full px-2.5 py-1 transition-colors ${
-                          isActive
-                            ? 'bg-black text-white'
-                            : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                        }`
-                  }
-                >
-                  {item.label}
-                </NavLink>
-              ))}
-            </nav>
-
-            {/* Mobile menu button */}
-            <button
-              type="button"
-              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-              onClick={() => setMenuOpen(!menuOpen)}
-              className={`rounded-full p-1.5 md:hidden ${homeOverlay ? 'text-gray-700 hover:bg-gray-100 sm:text-white sm:hover:bg-white/20' : 'text-gray-700 hover:bg-gray-100'}`}
+          <div className="flex min-h-14 items-center justify-between gap-1 py-1 sm:min-h-16 sm:gap-3 sm:py-1.5">
+            <Link to="/" className="flex min-w-0 max-w-[calc(100%-110px)] items-center">
+              <Wordmark />
+            </Link>
+            <Link
+              to="/sell"
+              className="inline-flex shrink-0 items-center gap-1 rounded-full border border-[#064E3B] bg-white px-2.5 py-1.5 text-[11px] font-semibold text-[#064E3B] shadow-sm transition-colors hover:bg-[#F7F4ED] focus:outline-none focus:ring-2 focus:ring-[#C89B3C]/50 sm:gap-1.5 sm:px-3.5 sm:text-xs"
             >
-              {menuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-            </button>
+              Post Property
+              <span className="animate-[sell-glow_2s_ease-in-out_infinite] rounded-full bg-[#047857] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white">
+                FREE
+              </span>
+            </Link>
           </div>
         </div>
 
-        {/* Mobile nav */}
-        {menuOpen && (
-          <div className={`border-t md:hidden ${homeOverlay ? 'border-gray-200 bg-white sm:border-white/20 sm:bg-black/70 sm:backdrop-blur-md' : 'border-gray-200 bg-white'}`}>
-            <nav className="flex flex-col gap-0.5 px-3 py-1.5 text-sm font-medium">
-              {NAV_ITEMS.map((item) => (
+        {pathname === '/' && (
+          <nav aria-label="Primary navigation" className="mx-auto max-w-7xl overflow-x-auto px-2 sm:px-6 lg:px-8">
+            <div className="flex min-w-max items-stretch justify-between gap-1 sm:justify-start sm:gap-8">
+              {NAV_ITEMS.map(({ label, to, Icon }) => (
                 <NavLink
-                  key={item.to}
-                  to={item.to}
-                  onClick={closeMenu}
+                  key={label}
+                  to={to}
                   className={({ isActive }) =>
-                    item.highlight
-                      ? `relative rounded-full bg-[#173F35] px-3 py-1 font-semibold text-white animate-[sell-glow_2s_ease-in-out_infinite] hover:bg-[#0E2B25]`
-                      : `rounded-full px-3 py-1 ${
-                          isActive
-                            ? 'bg-black text-white'
-                            : 'text-gray-700 hover:bg-gray-100'
-                        }`
+                    `group flex min-w-[60px] flex-1 flex-col items-center gap-0.5 border-b-2 px-2 py-1.5 text-[10px] font-medium transition-colors sm:min-w-16 sm:flex-none sm:px-3 sm:text-xs ${
+                      isActive
+                        ? 'border-[#2C78B8] text-[#1D6194]'
+                        : 'border-transparent text-[#52636D] hover:border-[#9BC5E1] hover:text-[#1D6194]'
+                    }`
                   }
                 >
-                  {item.label}
+                  <Icon className="h-5 w-5 text-[#2C78B8] transition-transform duration-200 group-hover:animate-[nav-icon-pop_450ms_ease-out] sm:h-[22px] sm:w-[22px]" aria-hidden="true" />
+                  <span>{label}</span>
                 </NavLink>
               ))}
-            </nav>
-          </div>
+            </div>
+          </nav>
         )}
       </header>
 
@@ -99,16 +165,16 @@ export default function Layout({ children }) {
       <main className="flex-1 pb-16 xl:pb-0">{children}</main>
 
       <nav className="fixed inset-x-0 bottom-0 z-[60] flex h-14 items-center justify-around border-t border-[#E5E1D8] bg-white px-3 pb-[env(safe-area-inset-bottom)] text-xs text-[#69756F] shadow-[0_-4px_18px_rgba(14,43,37,0.12)] xl:hidden">
-        <NavLink to="/" className={({ isActive }) => `flex min-w-14 flex-col items-center gap-0.5 rounded-md px-2 py-1 ${isActive ? 'font-semibold text-[#173F35]' : ''}`}>
-          <Home className="h-4 w-4" />
+        <NavLink to="/" className={({ isActive }) => `group flex min-w-14 flex-col items-center gap-0.5 rounded-md px-2 py-1 ${isActive ? 'font-semibold text-[#173F35]' : ''}`}>
+          <Home className="h-5 w-5 text-[#2C78B8] transition-transform duration-200 group-hover:animate-[nav-icon-pop_450ms_ease-out]" />
           Home
         </NavLink>
-        <NavLink to="/properties" className={({ isActive }) => `flex min-w-14 flex-col items-center gap-0.5 rounded-md px-2 py-1 ${isActive ? 'font-semibold text-[#173F35]' : ''}`}>
-          <Search className="h-4 w-4" />
+        <NavLink to="/properties" className={({ isActive }) => `group flex min-w-14 flex-col items-center gap-0.5 rounded-md px-2 py-1 ${isActive ? 'font-semibold text-[#173F35]' : ''}`}>
+          <Search className="h-5 w-5 text-[#2C78B8] transition-transform duration-200 group-hover:animate-[nav-icon-pop_450ms_ease-out]" />
           Search
         </NavLink>
-        <NavLink to="/sell" className={({ isActive }) => `flex min-w-14 flex-col items-center gap-0.5 rounded-md px-2 py-1 ${isActive ? 'font-semibold text-[#173F35]' : ''}`}>
-          <Upload className="h-4 w-4" />
+        <NavLink to="/sell" className={({ isActive }) => `group flex min-w-14 flex-col items-center gap-0.5 rounded-md px-2 py-1 ${isActive ? 'font-semibold text-[#173F35]' : ''}`}>
+          <Upload className="h-5 w-5 text-[#2C78B8] transition-transform duration-200 group-hover:animate-[nav-icon-pop_450ms_ease-out]" />
           Sell
         </NavLink>
       </nav>
@@ -130,7 +196,7 @@ export default function Layout({ children }) {
               <h3 className="mb-2 text-sm font-semibold text-white">Quick Links</h3>
               <ul className="space-y-1.5 text-sm">
                 {NAV_ITEMS.map((item) => (
-                  <li key={item.to}>
+                  <li key={item.label}>
                     <NavLink to={item.to} className="text-gray-400 hover:text-white">
                       {item.label}
                     </NavLink>
@@ -158,27 +224,6 @@ export default function Layout({ children }) {
               </ul>
             </div>
 
-            {/* Newsletter */}
-            <div>
-              <h3 className="mb-2 text-sm font-semibold text-white">Newsletter</h3>
-              <p className="mb-1.5 text-sm text-gray-400">
-                Subscribe for property alerts and market insights.
-              </p>
-              <form onSubmit={(e) => e.preventDefault()} className="flex gap-2">
-                <input
-                  type="email"
-                  placeholder="Your email"
-                  required
-                  className="flex-1 rounded-md border border-gray-700 bg-gray-800 px-3 py-1.5 text-sm text-white placeholder-gray-500 outline-none focus:border-emerald-400"
-                />
-                <button
-                  type="submit"
-                  className="rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-500"
-                >
-                  Send
-                </button>
-              </form>
-            </div>
           </div>
 
           <div className="mt-6 border-t border-gray-800 pt-4 text-center text-xs text-gray-500 sm:mt-8">

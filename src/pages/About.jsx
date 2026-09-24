@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom'
-import { Phone, Mail, MapPin } from 'lucide-react'
 
 const TEAM = [
   {
@@ -39,17 +38,26 @@ const VALUES = [
     title: 'Local Expertise',
     desc: 'Deep knowledge of South Indian land markets and regulations.',
   },
+  {
+    title: 'Customer First',
+    desc: 'Personal guidance from the first conversation through registration.',
+  },
+  {
+    title: 'Verified Listings',
+    desc: 'Every property is reviewed for documentation and practical potential.',
+  },
 ]
 
 export default function About() {
   return (
     <div className="w-full bg-white pb-12">
       {/* Hero */}
-      <section className="bg-[#0E2B25] px-4 py-11 text-center text-white sm:px-6 sm:py-14 md:px-12 md:py-16">
-        <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl md:text-4xl">
+      <section className="border-b border-[#E5E1D8] bg-[#F7F4ED] px-4 py-10 text-center sm:px-6 sm:py-14 md:px-12 md:py-16">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#8F6C2D]">Our story</p>
+        <h1 className="mt-2 text-2xl font-extrabold tracking-tight text-[#173F35] sm:text-3xl md:text-4xl">
           About Aathif Property
         </h1>
-        <p className="mt-2 max-w-2xl text-sm text-gray-300 mx-auto sm:mt-3 sm:text-base">
+        <p className="mx-auto mt-2 max-w-2xl text-sm leading-6 text-gray-600 sm:mt-3 sm:text-base">
           Building trust in land investment since 2009. We specialise in
           residential plots, farm land, and commercial properties across
           South India.
@@ -79,11 +87,11 @@ export default function About() {
       <section className="bg-gray-50 px-4 py-9 sm:px-6 sm:py-12 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <h2 className="text-center text-2xl font-bold text-gray-900">Our values</h2>
-          <div className="mt-6 grid gap-3 sm:mt-8 sm:gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-6 grid grid-cols-3 gap-2 sm:mt-8 sm:gap-4">
             {VALUES.map((v) => (
-              <div key={v.title} className="rounded-xl bg-white p-4 shadow-sm text-center">
-                <h3 className="text-lg font-semibold text-gray-900">{v.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-gray-600">{v.desc}</p>
+              <div key={v.title} className="rounded-xl bg-white p-2.5 text-center shadow-sm sm:p-4">
+                <h3 className="text-sm font-semibold leading-5 text-gray-900 sm:text-base">{v.title}</h3>
+                <p className="mt-1.5 text-[10px] leading-4 text-gray-600 sm:mt-2 sm:text-xs sm:leading-5">{v.desc}</p>
               </div>
             ))}
           </div>
@@ -110,14 +118,14 @@ export default function About() {
       </section>
 
       {/* CTA */}
-      <section className="bg-[#0E2B25] px-4 py-9 text-center text-white sm:px-6 sm:py-12 md:px-12 md:py-15">
-        <h2 className="text-xl font-bold sm:text-2xl">Ready to find your perfect property?</h2>
-        <p className="mt-2 text-sm text-gray-300">
+      <section className="border-t border-[#E5E1D8] bg-[#F7F4ED] px-4 py-9 text-center sm:px-6 sm:py-12 md:px-12 md:py-15">
+        <h2 className="text-xl font-bold text-[#173F35] sm:text-2xl">Ready to find your perfect property?</h2>
+        <p className="mt-2 text-sm text-gray-600">
           Contact us today and let our experts guide you through every step.
         </p>
         <Link
           to="/contact"
-          className="mt-4 inline-block rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-emerald-500"
+          className="mt-4 inline-block rounded-full bg-[#173F35] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#0E2B25]"
         >
           Get in touch
         </Link>

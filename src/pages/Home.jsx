@@ -1,11 +1,7 @@
-import { Link, useNavigate } from 'react-router-dom'
-import { Sparkles } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { LocateFixed, MapPin, Search, Sparkles } from 'lucide-react'
 import { PROPERTIES } from '../data/properties'
 import PropertyCard from '../components/PropertyCard'
-import SearchBar from '../components/SearchBar'
-
-const VIDEO_URL =
-  'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260403_050628_c4e32401-fab4-4a27-b7a8-6e9291cd5959.mp4'
 
 const STATS = [
   { label: 'Happy Customers', value: '5,000+' },
@@ -15,54 +11,55 @@ const STATS = [
 ]
 
 export default function Home() {
-  const navigate = useNavigate()
-
-  const handleSearch = (filters) => {
-    const params = new URLSearchParams()
-    Object.entries(filters).forEach(([key, val]) => {
-      if (val) params.set(key, val)
-    })
-    navigate(`/properties?${params.toString()}`)
-  }
-
   const featuredProperties = PROPERTIES.filter((p) => p.featured)
+
+  const highlightedProperty = featuredProperties[1] || featuredProperties[0]
 
   return (
     <main className="w-full bg-[#F7F4ED]">
-      {/* Hero */}
-      <section className="relative hidden min-h-0 w-full overflow-hidden bg-[#0E2B25] sm:block sm:min-h-[500px] sm:[height:74svh]">
-        <video
-          className="absolute inset-0 h-full w-full object-cover"
-          src={VIDEO_URL}
-          autoPlay
-          loop
-          muted
-          playsInline
-        />
-        <div className="absolute inset-0 bg-black/40" />
-
-        <div className="absolute left-1/2 top-1/2 z-10 hidden w-[calc(100%-2rem)] max-w-[1180px] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-2.5 text-center text-white sm:flex sm:w-[min(94%,1180px)] sm:gap-3">
-          <h1 className="text-2xl font-extrabold tracking-tight drop-shadow-lg sm:text-3xl md:text-4xl">
-            Find Your Dream Land
-          </h1>
-          <p className="max-w-2xl text-sm leading-5 drop-shadow-md sm:text-base sm:leading-normal">
-            Discover premium residential plots, farm land, commercial properties,
-            and luxury villas across Tamil Nadu.
-          </p>
-          <div className="w-full">
-            <SearchBar onSearch={handleSearch} />
-          </div>
+      {/* Featured property and connected search */}
+      <section className="relative px-4 pb-16 pt-3 sm:px-6 sm:pb-20 sm:pt-5 lg:px-8">
+        <div className="relative mx-auto max-w-7xl">
           <Link
-            to="/sell"
-            className="inline-flex min-h-9 items-center justify-center rounded-full bg-emerald-600 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-950/30 transition-colors hover:bg-emerald-500"
+            to={`/properties/${highlightedProperty.id}`}
+            className="group relative block h-[270px] overflow-hidden rounded-t-2xl rounded-b-lg bg-[#173F35] sm:h-[360px] sm:rounded-2xl md:h-[410px]"
           >
-            Sell your property
+            <img
+              src={highlightedProperty.images?.[0]}
+              alt={highlightedProperty.title}
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0E2B25]/90 via-[#0E2B25]/25 to-transparent" />
+            <div className="absolute right-4 top-5 max-w-[78%] text-right text-white sm:right-8 sm:top-8 md:right-12 md:top-12">
+              <h1 className="text-2xl font-semibold tracking-tight sm:text-4xl md:text-5xl">
+                {highlightedProperty.title}
+              </h1>
+              <p className="mt-2 flex items-center justify-end gap-1.5 text-sm text-white/85 sm:text-base">
+                {highlightedProperty.location.locality}, {highlightedProperty.location.city}
+                <MapPin className="h-4 w-4 shrink-0 text-[#C9A55C]" />
+              </p>
+              <p className="mt-3 text-lg font-semibold sm:text-xl">{highlightedProperty.price}</p>
+            </div>
           </Link>
-        </div>
-      </section>
 
-      <section className="bg-white px-3 pb-3 pt-3 sm:hidden">
-        <SearchBar onSearch={handleSearch} />
+          <div className="absolute inset-x-4 top-[calc(100%-1.5rem)] z-20 sm:inset-x-8 sm:top-[calc(100%-1.5rem)] md:inset-x-16">
+            <Link
+              to="/search"
+              className="flex h-12 w-full items-center gap-2.5 rounded-lg border border-gray-200 bg-white px-3 text-left shadow-lg shadow-black/10 transition-shadow hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#2C78B8]/40 sm:h-14 sm:rounded-xl sm:px-5"
+              aria-label="Open property search and filters"
+            >
+              <Search className="h-4 w-4 shrink-0 text-gray-700 sm:h-5 sm:w-5" />
+              <span className="flex-1 text-xs font-medium text-gray-400 sm:text-sm">Search properties...</span>
+              <span
+                title="Open search filters"
+                aria-hidden="true"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F7F4ED] text-[#C9A55C] sm:h-10 sm:w-10"
+              >
+                <LocateFixed className="h-4 w-4 sm:h-5 sm:w-5" />
+              </span>
+            </Link>
+          </div>
+        </div>
       </section>
 
       {/* Stats section */}
